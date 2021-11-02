@@ -4,7 +4,7 @@
 ## TODO:
 ## + Add negative numbers support
 ## + Check for all possible errors (like division by zero)
-## + Make random a/b flips
+## + Make random a/b flips to make parentheses more ~random~
 
 ## NOTEs
 ## ...
@@ -28,10 +28,11 @@ def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), 
         sign = choice(operations)  ## Pick a random sign between `a` and `b`
         priority_a = randint(0, 1)  ## Parentheses around `a` (priority)
 
+        ## Special case checks
         if str(eval(a)) == a:  ## Basically, if `a` is a single digit...
             priority_a = 0  ## don't ever put parentheses around it
-        #  elif sign in ('+', '-'):
-            #  priority_a = 0
+        if b == 0 and sign in ('/', '//'):  ## Don't let 'em divide by zero!
+            b = 1
 
 
         a = f"{'(' * priority_a}{a}{')' * priority_a}"  ## Wrap parentheses around `a` if `priority_a` is 1
