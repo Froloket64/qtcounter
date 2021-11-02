@@ -4,7 +4,6 @@
 ## TODO:
 ## + Add negative numbers support
 ## + Check for all possible errors (like division by zero)
-## + Allow math operations passing
 ## + Make random a/b flips
 
 ## NOTEs
@@ -18,12 +17,13 @@ def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), 
     `a` - left operand
     `b` - right operand
     '''
-    def actual_gen(a: str, times_left=difficulty, limit=limit):
+    def actual_gen(a: str, times_left=difficulty - 1, limit=limit):  ## "difficulty - 1" because it does `difficulty` + 1 iterations
         '''
         `a` - left operand
         `times_left` - actually amount of operands left to generate
         `limit` - maximum possible number
         '''
+        print(times_left)
         b = randint(int(allow_null), limit)  ## Gen `b` (right operand)
         sign = choice(operations)  ## Pick a random sign between `a` and `b`
         priority_a = randint(0, 1)  ## Parentheses around `a` (priority)
@@ -47,7 +47,7 @@ def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), 
 
     init_a = str( randint(int(allow_null), limit) )  ## Gen initial `a`
 
-    problem = actual_gen(init_a, 3)  ## Call our inner function to generate the problem
+    problem = actual_gen(init_a, difficulty)  ## Call our inner function to generate the problem
     solution = eval(problem)  ## Evaluate the string representing the problem, and get its solution
 
     if do_round:  ## If `do_round` is True...
