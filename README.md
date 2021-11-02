@@ -3,6 +3,13 @@ A simple app that helps to train quick calculations.
 
 ## Usage
 ### Manual
+Clone the repo in a folder using
+``` sh
+git clone https://github.com/Froloket64/qtcounter.git
+cd qtcounter/
+```
+And create a **python** file in there.
+
 The usage is as easy as:
 ``` py
 from problem_gen import problem_gen
