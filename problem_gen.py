@@ -4,6 +4,8 @@
 ## TODO:
 ## + Add negative numbers support
 ## + Check for all possible errors (like division by zero)
+## + Allow math operations passing
+## + Make random a/b flips
 
 ## NOTEs
 ## ...
@@ -11,35 +13,44 @@
 from random import randint, choice
 
 
-def problem_gen(limit: int, difficulty: int, *, do_round: bool = False, allow_null: bool = True):
+def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), *, do_round: bool = False, allow_null: bool = True):
+    '''
+    `a` - left operand
+    `b` - right operand
+    '''
     def actual_gen(a: str, times_left=difficulty, limit=limit):
-        b = randint(int(allow_null), limit)
-        sign = choice(('+', '-', '*', '/'))
-        priority_a = randint(0, 1)
+        '''
+        `a` - left operand
+        `times_left` - actually amount of operands left to generate
+        `limit` - maximum possible number
+        '''
+        b = randint(int(allow_null), limit)  ## Gen `b` (right operand)
+        sign = choice(operations)  ## Pick a random sign between `a` and `b`
+        priority_a = randint(0, 1)  ## Parentheses around `a` (priority)
 
-        if str(eval(a)) == a:
-            priority_a = 0
-        elif sign in ('+', '-'):
-            priority_a = 0
+        if str(eval(a)) == a:  ## Basically, if `a` is a single digit...
+            priority_a = 0  ## don't ever put parentheses around it
+        #  elif sign in ('+', '-'):
+            #  priority_a = 0
 
 
-        a = f"{'(' * priority_a}{a}{')' * priority_a}"
+        a = f"{'(' * priority_a}{a}{')' * priority_a}"  ## Wrap parentheses around `a` if `priority_a` is 1
 
-        problem = f"{a} {sign} {b}"
+        problem = f"{a} {sign} {b}"  ## Concat all together
 
         times_left -= 1
-        if times_left:
-            problem = actual_gen(problem, times_left)
+        if times_left:  ## If there are operands to gen left...
+            problem = actual_gen(problem, times_left)  ## RECURSION!
 
         return problem
 
 
-    init_a = str( randint(int(allow_null), limit) )
+    init_a = str( randint(int(allow_null), limit) )  ## Gen initial `a`
 
-    problem = actual_gen(init_a, 3)
-    solution = eval(problem)
+    problem = actual_gen(init_a, 3)  ## Call our inner function to generate the problem
+    solution = eval(problem)  ## Evaluate the string representing the problem, and get its solution
 
-    if do_round:
-        solution = round(solution + 0.01)
+    if do_round:  ## If `do_round` is True...
+        solution = round(solution + 0.01)  ## Round the solution (little trick: round 0.5 to 1, but 0.4 to 0)
 
-    return problem.replace('*', '×').replace('/', '÷'), solution
+    return problem.replace('*', '×').replace('/', '÷'), solution  ## Replace "*" and "/" with unicode chars and return it all!
