@@ -3,7 +3,6 @@
 
 ## TODO:
 ## + Check for all possible errors (like division by zero)
-## + Make random a/b flips to make parentheses (look) more ~random~
 ## + Make all possible optimizations
 
 ## NOTEs
@@ -28,6 +27,7 @@ def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), 
         b = randint(int(allow_null), limit)  ## Gen `b` (right operand)
         sign = choice(operations)  ## Pick a random sign between `a` and `b`
         priority_a = randint(0, 1)  ## Randomly add parentheses around `a` (priority)
+        flip = randint(0, 1)  ## Randomly decide to flip `a` and `b`
         if allow_negative:
             negative_b = randint(0, 1)  ## Randomly make `b` negative
         else:
@@ -44,7 +44,10 @@ def problem_gen(limit: int, difficulty: int, operations = ('+', '-', '*', '/'), 
         a = f"{'(' * priority_a}{a}{')' * priority_a}"  ## Wrap parentheses around `a` if `priority_a` is 1
         b = f"{'(-' * negative_b}{b}{')' * negative_b}"  ## ^ But if `b` is negative
 
-        problem = f"{a} {sign} {b}"  ## Concat all together
+        if flip:
+            problem = f"{b} {sign} {a}"  ## Concat all together  (`a` and `b` flipped)
+        else:
+            problem = f"{a} {sign} {b}"  ## Concat all together
 
         times_left -= 1
         if times_left:  ## If there are operands to gen left,
